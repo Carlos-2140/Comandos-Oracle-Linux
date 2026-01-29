@@ -1,0 +1,124 @@
+SCRIPT DE COMANDOS – MODULO 1
+Comandos usados Practica 1: Instalación del Sistema Operativo
+
+# Ver hostname actual
+hostname
+
+# Cambiar hostname por la matrícula (sin guion)
+hostnamectl set-hostname 20252140
+
+# Verificar hostname
+hostname
+
+Comandos usados Practica 2: Configuración de parámetros de red
+# Mostrar interfaces de red
+ip a
+ip addr
+
+# Ver las interfaces 
+nmcli device status 
+
+# Ver conexiones disponibles
+nmcli connection show
+
+ #Configurar la interfaz para usar DHCP
+ nmcli connection modify ens33 ipv4.method auto
+
+# Activar la conexión 
+nmcli connection up enp0s3
+# Ver la ip asignada 
+ip addr show ens33
+
+# Editar el archivo de la interfaz 
+sudo vi /etc/sysconfig/network-scripts/ifcfg-ens33
+
+# Reiniciar red
+systemctl restart NetworkManager
+
+# Configuración de red con IP estática
+ nmcli connection modify enp0s3 ipv4.method manual \
+ipv4.addresses 192.168.1.100/24 \
+ipv4.gateway 192.168.1.1
+
+#Configuracion de DNS
+nmcli connection modify enp0s3 ipv4.dns "8.8.8.8 8.8.4.4"
+nmcli connection up enp0s3
+
+# Comandos para colocar en el archivo de texto 
+DNS1=8.8.8.8
+DNS2=8.8.4.4
+
+# Configuración grafica de la red
+nmtui 
+
+
+
+
+Comandos usados Practica 3: Gestión de Usuarios y Grupos
+# Crear usuario con tu nombre
+useradd Carlos_R
+passwd Carlos_R
+
+# Agregar usuario al grupo sudoers (wheel)
+usermod -aG Wheel Carlos_R 
+
+# Ver grupos del usuario
+groups Carlos_R
+
+# Crear grupo guest
+groupadd guest
+
+# Crear usuario invitado
+useradd Juan
+passwd Juan
+
+# Agregar usuario al grupo guest
+usermod -aG guest Juan
+
+# Verificar grupo
+groups Juan
+
+# Eliminar usuario invitado
+userdel Juan
+# Eliminar grupo guest
+groupdel guest
+Comandos usados Practica 4: Gestión de Permisos de Archivos
+
+# Crear carpeta materia
+mkdir Materia
+
+# Entrar a la carpeta
+cd Materia
+
+# Crear y editar archivo con vi y touch
+Touch estudiante.txt
+vi estudiante.txt
+
+# Ver contenido del archivo
+cat estudiante.txt
+
+# Permisos solo para el propietario (rwx------)
+chmod 700 estudiante.txt
+
+# Ver permisos
+ls -l estudiante.txt
+
+# Permisos solo para el grupo (---rwx---)
+chmod 070 estudiante.txt
+
+# Permisos solo para otros (---------rwx)
+chmod 007 estudiante.txt
+
+
+# Ver permisos
+ls -l estudiante.txt
+
+# Crear carpeta Materia2
+cd ..
+mkdir Materia2
+
+# Copiar archivo a Materia2
+cp Materia/estudiante.txt Materia2/
+
+# Eliminar carpeta materia con todo su contenido
+rm -rf materia

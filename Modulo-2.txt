@@ -1,0 +1,73 @@
+SCRIPT DE COMANDOS – MODULO 2
+==================================================
+
+Comandos usados practica 1
+
+============================================
+sudo dnf update -y
+sudo dnf upgrade -y
+sudo dnf check-update
+sudo dnf repolist
+
+git clone https://github.com/aristocratos/bashtop.git
+cd bashtop
+sudo make install
+bashtop
+
+sudo rm /usr/local/bin/bashtop
+sudo rm -rf /usr/local/share/bashtop
+rm -rf ~/.config/bashtop
+rm -r bashtop
+
+sudo dnf autoremove -y
+
+
+
+Comandos usados practica 2
+
+============================================
+
+#cron
+
+sudo crontab -e
+0 23 * * * /usr/bin/dnf update -y
+0 3 * * 0 /sbin/reboot
+sudo crontab -l
+sudo cat /var/log/cron
+
+#at
+
+ls /tmp
+echo "rm -rf /tmp/*" | at now + 1 minute
+atq
+ls /tmp
+
+Comandos usados practica 3
+
+============================================
+
+sudo reboot
+lsblk
+sudo fdisk /dev/sdb
+n
+p
+1
+Enter
+Enter
+w
+
+sudo mkfs.ext4 /dev/sdb1
+mkdir ~/Escritorio/disco20GB
+sudo mount /dev/sdb1 ~/Escritorio/disco20GB
+
+df -h
+
+cd ~/Escritorio/disco20GB
+sudo touch AdrianAlcantara.txt
+ls
+
+sudo umount ~/Escritorio/disco20GB
+
+sudo mount /dev/sdb1 /mnt
+
+ls /mnt

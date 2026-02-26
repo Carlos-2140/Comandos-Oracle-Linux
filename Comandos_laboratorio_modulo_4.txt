@@ -1,0 +1,146 @@
+# Práctica 1: Servidor HTTP Apache2 / Nginx (1 punto)
+
+# Paso 1: Instalar Apache
+sudo dnf install httpd -y
+sudo systemctl enable --now httpd
+
+# Verifica:
+sudo systemctl status httpd
+
+# Verificamos si esta el servicio httpd en el firewall
+sudo firewall-cmd --list-all
+# Agregamos el servicio
+sudo firewall-cmd --add-service=http --permanent
+sudo firewall-cmd --reload
+
+# Crear la carpeta
+sudo mkdir -p /var/www/html/hola
+# Editar el archivo index.html
+sudo nano /var/www/html/hola/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos Personales</title>
+</head>
+<body>
+    <h1>Hola Mundo</h1>
+</body>
+</html>
+
+# Paso 3: Crear el VirtualHost que escuche en el puerto 80
+# Edita el archivo:
+sudo nano /etc/httpd/conf.d/hola.conf
+# Agrega:
+<VirtualHost *:80>
+    ServerAdmin webmaster@carlos  
+    DocumentRoot /var/www/html/hola
+    ServerName hola.local
+    ErrorLog /var/log/httpd/hola-error.log
+    CustomLog /var/log/httpd/hola-access.log combined
+</VirtualHost>
+# Guarda, luego:
+sudo systemctl restart httpd
+
+# Desde el navegador o cliente:
+http://<ip-del-servidor>
+# Deberías ver:
+# Hola Mundo
+
+# Paso 4: Crear website con tu nombre, matrícula y materia
+# Ejemplo:
+sudo mkdir -p /var/www/html/datos
+sudo nano /var/www/html/datos/index.html
+
+# Pega esto
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos Personales</title>
+</head>
+<body>
+    <h1>Carlos Ariel Rodriguez Ventura</h1>
+    <h1>2025-2140</h1>
+    <h1>Sistemas Operativos 3</h1>
+</body>
+</html>
+
+# Paso 5: Crear el VirtualHost en el puerto 8080
+# Edita:
+sudo nano /etc/httpd/conf.d/datos.conf
+# Agrega:
+<VirtualHost *:8080>
+    ServerAdmin webmaster@carlos
+    DocumentRoot /var/www/html/datos
+    ServerName datos.local
+    ErrorLog /var/log/httpd/datos-error.log
+    CustomLog /var/log/httpd/datos-access.log combined
+</VirtualHost>
+
+# Agregar el puerto 8080 al firewall
+sudo firewall-cmd --add-port=8080/tcp --permanent
+sudo nano /etc/httpd/conf/httpd.conf
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+
+
+
+# Reinicia el servicio:
+sudo systemctl restart httpd
+
+# Desde el navegador:
+http://<ip-del-servidor>:8080
+
+# Práctica 2: Servidor de Correo (Postfix) (2 puntos)
+
+# Paso 1: Instalar Postfix y utilidades
+sudo dnf install postfix mailx -y
+sudo systemctl enable --now postfix
+# Verifica:
+sudo systemctl status postfix
+
+# Paso 2: Configurar Postfix para salida directa
+# Edita el archivo principal:
+sudo nano /etc/postfix/main.cf
+
+# Asegúrate de que existan las siguientes líneas:
+myhostname = carlos.rhel.com
+mydomain = rhel.com
+myorigin = $mydomain
+mydestination = $myhostname, localhost.localdomain, localhost
+inet_interfaces = all
+inet_protocols = ipv4
+mynetworks = 192.168.174.129/24, 127.0.0.0/8
+#########
+relayhost = [smtp.gmail.com]:587
+smtp_use-tls = yes
+smtp_sasl_auth_enable =yes
+smtp_sasl_security_options = noanonymous
+smtp_sasl_password_maps = lmdb:/etc/postfix/sasl_passwd
+smtp_tls_seccion_cache_database = lmdb:${data_directory}/smtp_scache
+
+# Guarda
+
+# Crea el archivo Sasl
+sudo nano /etc/postfix/sasl_passwd
+# Agrega la clave creada en google.com
+[smtp.gmail.com]:587 arielcarlos038@gmail.com:vaoy xtkk actd figc
+
+# le damos permisos a la carpeta
+sudo chmod 600 /etc/postfix/sasl_passwd
+
+# Ahora levantaremos el servicio postmap
+sudo postmap /etc/postfix/sasl_passwd
+
+# reinicia:
+sudo systemctl restart postfix
+
+# Enviar correo de prueba al maestro
+echo "Nombre: Carlos Ariel Rodriguez Ventura - Mat: 20252140" | mailx -s "MambruSeFueALaGuerra" os3conadrian@gmail.com
+
+# Verificar logs de envío
+sudo tail -f /var/log/maillog

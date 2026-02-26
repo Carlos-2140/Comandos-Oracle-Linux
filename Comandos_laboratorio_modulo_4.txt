@@ -1,6 +1,6 @@
 # Práctica 1: Servidor HTTP Apache2 / Nginx (1 punto)
 
-# Paso 1: Instalar Apache
+Paso 1: Instalar Apache
 sudo dnf install httpd -y
 sudo systemctl enable --now httpd
 
@@ -9,12 +9,14 @@ sudo systemctl status httpd
 
 # Verificamos si esta el servicio httpd en el firewall
 sudo firewall-cmd --list-all
+
 # Agregamos el servicio
 sudo firewall-cmd --add-service=http --permanent
 sudo firewall-cmd --reload
 
 # Crear la carpeta
 sudo mkdir -p /var/www/html/hola
+
 # Editar el archivo index.html
 sudo nano /var/www/html/hola/index.html
 
@@ -30,9 +32,10 @@ sudo nano /var/www/html/hola/index.html
 </body>
 </html>
 
-# Paso 3: Crear el VirtualHost que escuche en el puerto 80
+Paso 3: Crear el VirtualHost que escuche en el puerto 80
 # Edita el archivo:
 sudo nano /etc/httpd/conf.d/hola.conf
+
 # Agrega:
 <VirtualHost *:80>
     ServerAdmin webmaster@carlos  
@@ -41,20 +44,22 @@ sudo nano /etc/httpd/conf.d/hola.conf
     ErrorLog /var/log/httpd/hola-error.log
     CustomLog /var/log/httpd/hola-access.log combined
 </VirtualHost>
-# Guarda, luego:
+
+#Reiniciamos el servidor http
 sudo systemctl restart httpd
 
 # Desde el navegador o cliente:
 http://<ip-del-servidor>
-# Deberías ver:
+
+#Deberías ver:
 # Hola Mundo
 
-# Paso 4: Crear website con tu nombre, matrícula y materia
+Paso 4: Crear website con tu nombre, matrícula y materia
 # Ejemplo:
 sudo mkdir -p /var/www/html/datos
 sudo nano /var/www/html/datos/index.html
 
-# Pega esto
+# Coloca esto 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,9 +74,11 @@ sudo nano /var/www/html/datos/index.html
 </body>
 </html>
 
-# Paso 5: Crear el VirtualHost en el puerto 8080
+Paso 5: Crear el VirtualHost en el puerto 8080
+
 # Edita:
 sudo nano /etc/httpd/conf.d/datos.conf
+
 # Agrega:
 <VirtualHost *:8080>
     ServerAdmin webmaster@carlos
@@ -88,22 +95,24 @@ sudo firewall-cmd --reload
 sudo firewall-cmd --list-all
 
 
-
 # Reinicia el servicio:
 sudo systemctl restart httpd
 
 # Desde el navegador:
 http://<ip-del-servidor>:8080
 
+
 # Práctica 2: Servidor de Correo (Postfix) (2 puntos)
 
-# Paso 1: Instalar Postfix y utilidades
+Paso 1: Instalar Postfix y utilidades
 sudo dnf install postfix mailx -y
 sudo systemctl enable --now postfix
+
 # Verifica:
 sudo systemctl status postfix
 
-# Paso 2: Configurar Postfix para salida directa
+Paso 2: Configurar Postfix para salida directa
+
 # Edita el archivo principal:
 sudo nano /etc/postfix/main.cf
 
@@ -123,10 +132,10 @@ smtp_sasl_security_options = noanonymous
 smtp_sasl_password_maps = lmdb:/etc/postfix/sasl_passwd
 smtp_tls_seccion_cache_database = lmdb:${data_directory}/smtp_scache
 
-# Guarda
 
 # Crea el archivo Sasl
 sudo nano /etc/postfix/sasl_passwd
+
 # Agrega la clave creada en google.com
 [smtp.gmail.com]:587 arielcarlos038@gmail.com:vaoy xtkk actd figc
 
